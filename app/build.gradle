@@ -1,0 +1,29 @@
+plugins {
+    id 'com.gradleup.shadow' version '8.3.1'
+    id 'buildlogic.java-application-conventions'
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources"
+        }
+    }
+}
+
+dependencies {
+    implementation project(':lib')
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'edu.wofford.app.App'
+}
+
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': 'edu.wofford.app.App'
+    }
+}
