@@ -27,8 +27,38 @@ public class App {
         // OVERLOAD - student schedule is full
         // DUPLICATE - student schedule already contains the course
         // CONFLICT - course conflicts with another on student schedule
+        try{
+            Course course = offerings.getCourse(courseIndex);
+            if (course.isFull()) {
+                return Result.FULL;
+            }
+
+            Student.Result studentResult = student.addCourse(course);
+            System.out.println(course);
+            for(Course i: student.getCourses()){
+                System.out.println(i);
+            }
+            System.out.println(studentResult);
+            
+            
+            switch (studentResult) {
+                case SUCCESS:
+                course.setEnrolled(course.getEnrolled()+1);
+                    return Result.SUCCESS;
+                case DUPLICATE:
+                    return Result.DUPLICATE;
+                case OVERLOAD:
+                    return Result.OVERLOAD;
+                case CONFLICT:
+                    return Result.CONFLICT;
+                default:
+                    return Result.INVALID;
+            }
+        }catch (Exception e){
+            return Result.INVALID;
+        }
+        // System.out.println(student.addCourse((offerings.getCourse(courseIndex))).toString());
         
-        return Result.INVALID;
     }
 
     public static void main(String[] args) {

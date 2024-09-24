@@ -20,6 +20,8 @@ public class CourseOfferings {
      * initializes the number of courses to 0.
      */
     public CourseOfferings() {
+        courses = new Course[100];
+        numCourses = 0;
 
     }
 
@@ -39,6 +41,33 @@ public class CourseOfferings {
      * CS 232 2 MWF 1630 1800 AH 363 Garrett 15 5
      */
     public CourseOfferings(File file) {
+        courses = new Course[100];
+        numCourses = 0;
+        try{
+            Scanner scanner = new Scanner(file);
+            while(scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                String[] courseArray = line.split(" ");
+                Course courseTrack = new Course(courseArray[0], courseArray[1], Integer.parseInt(courseArray[2]));
+                courseTrack.setDays(courseArray[3]);
+                Time start = new Time(courseArray[4]);
+                Time end = new Time(courseArray[5]);
+                TimeRange time = new TimeRange(start, end);
+                courseTrack.setTime(time);
+                courseTrack.setBuilding(courseArray[6]);
+                courseTrack.setRoom(courseArray[7]);
+                courseTrack.setFaculty(courseArray[8]);
+                courseTrack.setCapacity(Integer.parseInt(courseArray[9]));
+                courseTrack.setEnrolled(Integer.parseInt(courseArray[10]));
+                courses[numCourses] = courseTrack;
+                numCourses++;
+            }
+        } catch(FileNotFoundException e){
+            System.out.println("File Not Found");
+        }
+        // for (int i = 0; i < courses.length; i++){
+        //     System.out.println(courses[i] + "COURSE LIST");
+        // }
         
     }
 
@@ -48,9 +77,8 @@ public class CourseOfferings {
      * @return the number of courses
      */
     public int getNumCourses() {
-        return -1;
+        return numCourses;
     }
-
     /**
      * This method returns the course at index i. If i is not within the 
      * legal bounds of the array (less than 0 or greater than or equal to 
@@ -60,8 +88,13 @@ public class CourseOfferings {
      * @param i the index of the course to retrieve
      * @return the course at index i
      */
-    public Course getCourse(int i) {
-        return null;
+    public Course getCourse(int i){
+        if (i < 0 || i >= numCourses){
+            throw new ArrayIndexOutOfBoundsException("Number out of Bounds");
+        }
+            return courses[i];
+        
+        
     }
 
     /**
@@ -74,7 +107,11 @@ public class CourseOfferings {
      * @param c the course that should replace the one at index i
      */
     public void setCourse(int i, Course c) {
-
+        if (i < 0 || i >= numCourses){
+            throw new ArrayIndexOutOfBoundsException("Number out of Bounds");
+        }
+            courses[i] = c;
+        
     }
 
     /**
@@ -85,6 +122,11 @@ public class CourseOfferings {
      * @return whether the course could be added
      */
     public boolean addCourse(Course c) {
+        if (numCourses < 100){
+            courses[numCourses] = c;
+            numCourses++;
+            return true;
+        }
         return false;
     }
 
@@ -96,6 +138,12 @@ public class CourseOfferings {
      */
     public String toString() {
         String s = "";
+        for (Course c: courses){
+            if(c != null){
+                s = s.concat(c.toString() + "\n");
+            }
+        }
+       
         return s;
     }
 }

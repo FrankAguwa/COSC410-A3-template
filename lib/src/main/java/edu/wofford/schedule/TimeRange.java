@@ -21,6 +21,13 @@ public class TimeRange {
      * constructor switches them around to make the range meaningful.
      */
     public TimeRange(Time startTime, Time endTime) {
+        if (startTime.before(endTime)){
+            this.startTime = startTime;
+            this.endTime = endTime; 
+        } else{
+            this.startTime = endTime;
+            this.endTime = startTime;
+        }
 
     }
 
@@ -34,7 +41,7 @@ public class TimeRange {
      * @return the start time of this time range
      */
     public Time getStartTime() {
-        return null;
+        return startTime;
     }
     
     
@@ -48,7 +55,7 @@ public class TimeRange {
      * @return the end time of this time range
      */
     public Time getEndTime() {
-        return null;
+        return endTime;
     }
 
     /**
@@ -58,7 +65,19 @@ public class TimeRange {
      * @return the duration of the range in minutes
      */
     public int getDuration() {
-        return -1;
+        int duration = 0;
+        int startHour = startTime.getHour();
+        int startMinute = startTime.getMinute();
+        int endHour = endTime.getHour();
+        int endMinute = endTime.getMinute();
+
+        while (startHour < endHour){
+            duration += 60 - startMinute;
+            startMinute = 0;
+            startHour ++;
+        }
+        duration += endMinute;
+        return duration;
     }
 
     /**
@@ -71,6 +90,9 @@ public class TimeRange {
      * @return whether this range contains the given time
      */
     public boolean contains(Time time) {
+        if((time.after(startTime) && time.before(endTime)) || (time.equals(startTime) || time.equals(endTime))){
+            return true;
+        }
         return false;
     }
 
@@ -84,6 +106,9 @@ public class TimeRange {
      * @return whether this range overlaps the given range
      */
     public boolean overlaps(TimeRange otherRange) {
+        if (otherRange.contains(startTime) || otherRange.contains(endTime)){
+            return true;
+        }
         return false;
     }
 
@@ -95,6 +120,6 @@ public class TimeRange {
      * @return the string representation of this range
      */
     public String toString() {
-        return "";
+        return startTime.toString() + "-" + endTime.toString();
     }
 }

@@ -10,6 +10,8 @@
  
 package edu.wofford.schedule;
 
+import java.nio.ReadOnlyBufferException;
+
 public class Time {
     protected int hour;       // range [0, 23]
     protected int minute;     // range [0, 59]
@@ -49,7 +51,8 @@ public class Time {
      * midnight (0 hour and 0 minute).
      */
     public Time() {
-
+        hour = 0;
+        minute = 0;
     }
 
     /**
@@ -58,7 +61,18 @@ public class Time {
      * otherwise, the constructor initializes the object to midnight.
      */
     public Time(String time) {
-
+        time = pad(time);
+        int[] t = new int[2];
+        try{
+             t = convertStringToHoursMins(time);
+        } catch(NumberFormatException e){
+            hour = 0;
+            minute = 0;
+            t[0] = 0;
+            t[1] = 0;
+        }
+        hour = t[0];
+        minute = t[1];
     }
 
     /**
@@ -67,7 +81,13 @@ public class Time {
      * ranges; otherwise, they are replaced with zeros.
      */
     public Time(int hour, int minute) {
-
+        if ((hour >= 0 && hour <= 23) &&  (minute >= 0 && minute <=59)){
+            this.hour = hour;
+            this.minute = minute;
+        } else{
+            this.hour = 0;
+            this.minute = 0;
+        }
     }
 
     /**
@@ -76,7 +96,7 @@ public class Time {
      * @return the hour
      */
     public int getHour() {
-        return -1;
+        return hour;
     }
 
     /**
@@ -85,7 +105,11 @@ public class Time {
      * @param hour the hour
      */
     public void setHour(int hour) {
-
+        if (hour >= 0 && hour <= 23){
+            this.hour = hour;
+        } else{
+            this.hour = 0; //come back to this if error
+        }
     } 
 
     /**
@@ -94,7 +118,7 @@ public class Time {
      * @return the minute
      */
     public int getMinute() {
-        return -1;
+        return minute;
     }
 
     /**
@@ -103,7 +127,11 @@ public class Time {
      * @param minute the minute
      */
     public void setMinute(int minute) {
-
+        if (minute >= 0 && minute <=59){
+            this.minute = minute;
+        } else{
+            this.minute = 0;
+        }
     }
 
     /**
@@ -113,7 +141,18 @@ public class Time {
      * @param time the time as a string
      */
     public void setTime(String time) {
-
+        time = pad(time);
+        int[] t = new int[2];
+        try{
+            t = convertStringToHoursMins(time);
+            if ((t[0] >=0 && t[0] <= 24) && (t[1] >= 0 && t[1] <= 59)){
+                hour = t[0];
+                minute = t[1];
+            }
+        } catch(NumberFormatException e){
+            hour = 0;
+            minute = 0;
+        }
     }
 
     /**
@@ -124,6 +163,13 @@ public class Time {
      * @return whether the current object occurs before time
      */
     public boolean before(Time time) {
+        if (hour < time.getHour()){
+            return true;
+        } else if(hour == time.getHour()){
+            if (minute < time.getMinute()){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -135,6 +181,13 @@ public class Time {
      * @return whether the current object occurs after time
      */
     public boolean after(Time time) {
+        if (hour > time.getHour()){
+            return true;
+        } else if(hour == time.getHour()){
+            if (minute > time.getMinute()){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -146,6 +199,9 @@ public class Time {
      * @return whether the current object is the same as time
      */
     public boolean equals(Time time) {
+        if (hour == time.getHour() && minute == time.getMinute()){
+            return true;
+        }
         return false;
     }
 
@@ -157,6 +213,17 @@ public class Time {
      */
     public String toString() {
         String s = "";
+        int[] t = new int[2];
+        t[0] = hour;
+        t[1] = minute;
+        for (int item : t){
+            if (item < 10){
+                s = s.concat("0"+ String.valueOf(item));
+            } else{
+                s= s.concat(String.valueOf(item));
+            }
+        }
         return s;
+        
     }
 }

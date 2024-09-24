@@ -22,13 +22,13 @@ public class Course {
      * A two- or three-letter designation for a department. For example, 
      * "CS" represents "computer science."
      */
-    protected String department;
+    protected String department = "";
     
     /**
      * An alphanumeric string representing the course number. For example, 
      * "232" or "110M."
      */
-    protected String number;
+    protected String number = "";
 
     /**
      * A positive integer representing the section number.
@@ -41,7 +41,7 @@ public class Course {
      * week from Sunday through Saturday would be represented as "NMTWRFS". 
      * These designations should be capital letters.
      */
-    protected String days;
+    protected String days = "";
 
     /**
      * The range of time for the class (e.g., 10am to 11am).
@@ -51,17 +51,17 @@ public class Course {
     /**
      * The abbreviation for the building (e.g., "AH" for "Ayers Hall").
      */
-    protected String building;
+    protected String building = "" ;
 
     /**
      * The alphanumeric room number (e.g., "214" or "105C").
      */
-    protected String room;
+    protected String room = "";
 
     /**
      * The last name of the faculty member teaching the course (e.g., "Garrett").
      */
-    protected String faculty;
+    protected String faculty = "";
 
     /**
      * The maximum capacity for the course.
@@ -78,99 +78,112 @@ public class Course {
      * This constructor requires the department, course number, and section.
      */
     public Course(String department, String number, int section) {
-
+        this.department = department.toUpperCase();
+        this.number = number.toUpperCase();
+        this.section = section;
     }
 
     public String getDepartment() {
-        return "";
+        return department.toUpperCase();
     }
     
     public void setDepartment(String department) {
-
+        this.department = department;
     }
     
     public String getNumber() {
-        return "";
+        return number.toUpperCase();
     }
     
     public void setNumber(String number) {
-
+        this.number = number;
     }
     
     public int getSection() {
-        return -1;
+        return section;
     }
     
     /**
      * The section must be greater than 0.
      */
     public void setSection(int section) {
-
+        if (section > 0){
+            this.section = section;
+        }
     }
     
     public String getDays() {
-        return "";
+        return days.toUpperCase();
     }
 
     /**
      * The days must be converted to uppercase.
      */
     public void setDays(String days) {
-
+        this.days = days.toUpperCase();
     }
 
     public TimeRange getTime() {
-        return null;
+        return time;
     }
     
     public void setTime(TimeRange time) {
-
+        this.time = time;
     }
     
     public String getBuilding() {
-        return "";
+        try{
+            return building;
+        } catch(NullPointerException e){
+            return "";
+        }
+        
     }
     
     public void setBuilding(String building) {
-
+        this.building = building.toUpperCase();
     }
     
     public String getRoom() {
-        return "";
+        return room.toUpperCase();
     }
     
     public void setRoom(String room) {
-
+        this.room = room.toUpperCase();
     }
     
     public String getFaculty() {
-        return "";
+        return faculty;
     }
     
     public void setFaculty(String faculty) {
-
+        this.faculty = faculty;
     }
     
     public int getCapacity() {
-        return -1;
+        return capacity;
     }
     
     /**
      * The capacity must be greater than or equal to 0.
      */
     public void setCapacity(int capacity) {
-
+        if (capacity >= 0){
+            this.capacity = capacity;
+        }
     }
     
     public int getEnrolled() {
-        return -1;
+        return enrolled;
     }
     
     /**
      * The enrolled must be greater than or equal to 0.
      */
     public void setEnrolled(int enrolled) {
-
+        if(enrolled >= 0){
+            this.enrolled = enrolled;
+        }
     }
 
     /**
@@ -180,6 +193,9 @@ public class Course {
      * @return whether the course is full
      */
     public boolean isFull() {
+        if (enrolled >= capacity){
+            return true;
+        }
         return false;
     }
 
@@ -190,6 +206,16 @@ public class Course {
      * @return whether the course meets on the given day
      */
     public boolean meetsOn(Day day) {
+        String allDays = "NMTWRFS";
+        int index = 0;
+        for (Day s: Day.values()){
+            if (s == day){
+                if(days.contains("" +allDays.charAt(index))){
+                    return true;
+                }
+            }
+            index++;
+        }
         return false;
     }
 
@@ -202,6 +228,13 @@ public class Course {
      * @return whether the current course conflicts with the course parameter
      */
     public boolean conflictsWith(Course course) {
+        String[] allDays = days.split("");
+        for(String i : allDays){
+            if (course.getDays().contains(i) && time.overlaps(course.getTime())){
+                return true;
+            }
+        }
+            
         return false;
     }
 
@@ -214,6 +247,7 @@ public class Course {
      * @return the string representation of the course
      */
     public String toString() {
-        return "";
+        return department + " " + number + " " + section + " " + days + " " + time.getStartTime().toString() + " " + time.getEndTime().toString() + " " + building
+        + " " + room + " " + faculty + " " + capacity + " " + enrolled;
     }
 }
